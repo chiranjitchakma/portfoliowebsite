@@ -1,212 +1,249 @@
-// ============================================
+// ==========================================
 // TYPING ANIMATION
-// ============================================
-const typingText = document.querySelector('.typing-text');
+// ==========================================
+const typingElement = document.querySelector('.typing-text');
 const textToType = 'Data Science & AI Enthusiast | App & Game Developer | Future Cybersecurity Expert';
 let charIndex = 0;
 
 function typeText() {
     if (charIndex < textToType.length) {
-        typingText.textContent += textToType.charAt(charIndex);
+        typingElement.textContent += textToType.charAt(charIndex);
         charIndex++;
         setTimeout(typeText, 50);
-    } else {
-        // Add blinking cursor
-        typingText.innerHTML += '<span class="cursor">|</span>';
     }
 }
 
-// Start typing animation when page loads
+// Start typing animation
 window.addEventListener('load', () => {
-    setTimeout(typeText, 500);
+    setTimeout(typeText, 800);
 });
 
-// ============================================
+// ==========================================
+// NAVBAR SCROLL EFFECT
+// ==========================================
+const navbar = document.querySelector('.navbar');
+let lastScroll = 0;
+
+window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+    
+    if (currentScroll > 100) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+    
+    lastScroll = currentScroll;
+});
+
+// ==========================================
+// MOBILE MENU
+// ==========================================
+const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+const mobileMenu = document.querySelector('.mobile-menu');
+const closeMenuBtn = document.querySelector('.close-menu');
+const mobileLinks = document.querySelectorAll('.mobile-links a');
+
+if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.add('active');
+    });
+}
+
+if (closeMenuBtn) {
+    closeMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+    });
+}
+
+mobileLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+    });
+});
+
+// ==========================================
 // SMOOTH SCROLL
-// ============================================
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
+// ==========================================
+const allLinks = document.querySelectorAll('a[href^="#"]');
+
+allLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+        const targetId = this.getAttribute('href');
+        const targetSection = document.querySelector(targetId);
+        
+        if (targetSection) {
+            const navbarHeight = navbar.offsetHeight;
+            const targetPosition = targetSection.offsetTop - navbarHeight;
+            
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
             });
         }
     });
 });
 
-// ============================================
+// ==========================================
+// ACTIVE NAVIGATION
+// ==========================================
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+
+function updateActiveNav() {
+    const scrollPosition = window.pageYOffset + 150;
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+        const sectionId = section.getAttribute('id');
+        
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${sectionId}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+    });
+}
+
+window.addEventListener('scroll', updateActiveNav);
+
+// ==========================================
+// SKILLS ANIMATION
+// ==========================================
+const skillBars = document.querySelectorAll('.skill-bar');
+
+const skillObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const skillLevel = entry.target.getAttribute('data-skill');
+            setTimeout(() => {
+                entry.target.style.width = skillLevel + '%';
+            }, 200);
+            skillObserver.unobserve(entry.target);
+        }
+    });
+}, {
+    threshold: 0.5
+});
+
+skillBars.forEach(bar => {
+    skillObserver.observe(bar);
+});
+
+// ==========================================
 // SCROLL ANIMATIONS
-// ============================================
+// ==========================================
 const observerOptions = {
-    threshold: 0.2,
-    rootMargin: '0px 0px -100px 0px'
+    threshold: 0.15,
+    rootMargin: '0px 0px -50px 0px'
 };
 
-const observer = new IntersectionObserver((entries) => {
+const fadeInObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             entry.target.style.opacity = '1';
             entry.target.style.transform = 'translateY(0)';
-            
-            // Animate skill bars when they come into view
-            if (entry.target.classList.contains('skill-card')) {
-                const progress = entry.target.querySelector('.skill-progress');
-                const percent = progress.getAttribute('data-progress');
-                setTimeout(() => {
-                    progress.style.width = percent + '%';
-                }, 200);
-            }
         }
     });
 }, observerOptions);
 
-// Observe elements for scroll animations
-const animateOnScroll = document.querySelectorAll('.skill-card, .project-card, .about-content');
-animateOnScroll.forEach(el => {
+const fadeElements = document.querySelectorAll('.skill-item, .project-card, .about-card');
+fadeElements.forEach(el => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(30px)';
     el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
+    fadeInObserver.observe(el);
 });
 
-// ============================================
-// NAVBAR BACKGROUND ON SCROLL
-// ============================================
-window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 100) {
-        navbar.style.background = 'rgba(10, 10, 10, 0.95)';
-        navbar.style.boxShadow = '0 5px 30px rgba(0, 240, 255, 0.1)';
-    } else {
-        navbar.style.background = 'rgba(10, 10, 10, 0.8)';
-        navbar.style.boxShadow = 'none';
-    }
-});
-
-// ============================================
-// SCROLL INDICATOR
-// ============================================
-const scrollIndicator = document.querySelector('.scroll-indicator');
-if (scrollIndicator) {
-    scrollIndicator.addEventListener('click', () => {
-        document.querySelector('#about').scrollIntoView({ behavior: 'smooth' });
-    });
-    
-    // Hide scroll indicator when user scrolls
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 100) {
-            scrollIndicator.style.opacity = '0';
-        } else {
-            scrollIndicator.style.opacity = '1';
-        }
-    });
-}
-
-// ============================================
+// ==========================================
 // CONTACT FORM
-// ============================================
+// ==========================================
 const contactForm = document.getElementById('contactForm');
+const successMessage = document.getElementById('successMessage');
+
 if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
+    contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
         const formData = new FormData(contactForm);
-        const data = Object.fromEntries(formData);
+        const data = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            subject: formData.get('subject'),
+            message: formData.get('message')
+        };
         
         // Show success message
-        alert('Thank you for your message! I will get back to you soon.');
+        successMessage.classList.add('show');
+        
+        // Hide after 3 seconds
+        setTimeout(() => {
+            successMessage.classList.remove('show');
+        }, 3000);
         
         // Reset form
         contactForm.reset();
         
-        // In production, you would send this data to a server
-        console.log('Form data:', data);
+        // Log data (in production, send to server)
+        console.log('Form submitted:', data);
+        
+        // You can integrate EmailJS or your backend here
+        // Example: sendEmail(data);
     });
 }
 
-// ============================================
-// ACTIVE NAVIGATION LINK
-// ============================================
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-link');
-
-window.addEventListener('scroll', () => {
-    let current = '';
-    
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-        if (window.pageYOffset >= sectionTop - 200) {
-            current = section.getAttribute('id');
-        }
-    });
-    
-    navLinks.forEach(link => {
-        link.style.color = '';
-        if (link.getAttribute('href') === `#${current}`) {
-            link.style.color = 'var(--color-primary)';
-        }
-    });
-});
-
-// ============================================
-// CURSOR ANIMATION
-// ============================================
-const style = document.createElement('style');
-style.textContent = `
-    .cursor {
-        animation: blink 1s infinite;
-        color: var(--color-primary);
-        font-weight: 100;
-    }
-    
-    @keyframes blink {
-        0%, 50% { opacity: 1; }
-        51%, 100% { opacity: 0; }
-    }
-`;
-document.head.appendChild(style);
-
-// ============================================
+// ==========================================
 // PARALLAX EFFECT
-// ============================================
+// ==========================================
+const heroBgImage = document.querySelector('.hero-bg-image');
+
 window.addEventListener('scroll', () => {
     const scrolled = window.pageYOffset;
-    const parallaxElements = document.querySelectorAll('.hero-image');
-    
-    parallaxElements.forEach(el => {
+    if (heroBgImage) {
         const speed = 0.5;
-        el.style.transform = `translateY(${scrolled * speed}px)`;
-    });
+        heroBgImage.style.transform = `translateY(${scrolled * speed}px)`;
+    }
 });
 
-// ============================================
-// GLOW EFFECTS ANIMATION
-// ============================================
-const glowEffects = document.querySelectorAll('.glow-effect');
-let mouseX = 0;
-let mouseY = 0;
+// ==========================================
+// GLOW EFFECTS MOUSE TRACKING
+// ==========================================
+const glowElements = document.querySelectorAll('.glow');
 
 document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
+    const mouseX = e.clientX / window.innerWidth;
+    const mouseY = e.clientY / window.innerHeight;
+    
+    glowElements.forEach((glow, index) => {
+        const speed = (index + 1) * 0.02;
+        const moveX = (mouseX - 0.5) * 100 * speed;
+        const moveY = (mouseY - 0.5) * 100 * speed;
+        
+        glow.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    });
 });
 
-function animateGlow() {
-    glowEffects.forEach((glow, index) => {
-        const speed = (index + 1) * 0.0001;
-        const x = mouseX * speed;
-        const y = mouseY * speed;
-        
-        glow.style.transform = `translate(${x}px, ${y}px)`;
-    });
-    
-    requestAnimationFrame(animateGlow);
-}
+// ==========================================
+// SCROLL TO TOP ON PAGE LOAD
+// ==========================================
+window.addEventListener('beforeunload', () => {
+    window.scrollTo(0, 0);
+});
 
-animateGlow();
+// ==========================================
+// CONSOLE MESSAGE
+// ==========================================
+console.log(
+    '%c Portfolio Loaded Successfully! ',
+    'background: linear-gradient(135deg, #00f0ff, #0066ff); color: white; font-size: 16px; padding: 10px 20px; border-radius: 5px; font-weight: bold;'
+);
 
-console.log('%c Portfolio Loaded Successfully! ', 'background: linear-gradient(135deg, #00f0ff, #0066ff); color: white; font-size: 16px; padding: 10px 20px; border-radius: 5px;');
+console.log(
+    '%c Made with ❤️ by Chiranjit Chakma ',
+    'background: #0a0a0a; color: #00f0ff; font-size: 14px; padding: 8px 16px; border-radius: 5px;'
+);
