@@ -26,13 +26,13 @@ let lastScroll = 0;
 
 window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset;
-    
+
     if (currentScroll > 100) {
         navbar.classList.add('scrolled');
     } else {
         navbar.classList.remove('scrolled');
     }
-    
+
     lastScroll = currentScroll;
 });
 
@@ -72,11 +72,11 @@ allLinks.forEach(link => {
         e.preventDefault();
         const targetId = this.getAttribute('href');
         const targetSection = document.querySelector(targetId);
-        
+
         if (targetSection) {
             const navbarHeight = navbar.offsetHeight;
             const targetPosition = targetSection.offsetTop - navbarHeight;
-            
+
             window.scrollTo({
                 top: targetPosition,
                 behavior: 'smooth'
@@ -93,12 +93,12 @@ const navLinks = document.querySelectorAll('.nav-links a');
 
 function updateActiveNav() {
     const scrollPosition = window.pageYOffset + 150;
-    
+
     sections.forEach(section => {
         const sectionTop = section.offsetTop;
         const sectionHeight = section.offsetHeight;
         const sectionId = section.getAttribute('id');
-        
+
         if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
             navLinks.forEach(link => {
                 link.classList.remove('active');
@@ -161,39 +161,89 @@ fadeElements.forEach(el => {
 });
 
 // ==========================================
-// CONTACT FORM
+// CONTACT FORM - WEB3FORMS INTEGRATION
 // ==========================================
 const contactForm = document.getElementById('contactForm');
 const successMessage = document.getElementById('successMessage');
 
 if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
+    contactForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
-        const formData = new FormData(contactForm);
-        const data = {
-            name: formData.get('name'),
-            email: formData.get('email'),
-            subject: formData.get('subject'),
-            message: formData.get('message')
-        };
-        
-        // Show success message
-        successMessage.classList.add('show');
-        
+
+        const submitButton = this.querySelector('button[type="submit"]');
+        const originalText = submitButton.innerHTML;
+
+        // Show loading state
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending...</span>';
+        submitButton.disabled = true;
+
+        try {
+            const formData = new FormData(this);
+
+            // Send to Web3Forms
+            const response = await fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Show success message
+                successMessage.querySelector('span').textContent = 'Message sent successfully!';
+                successMessage.classList.add('show');
+
+                // Reset form
+                this.reset();
+
+                // Hide message after 5 seconds
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                }, 5000);
+            } else {
+                throw new Error(result.message || 'Something went wrong!');
+            }
+
+        } catch (error) {
+            // Show error message
+            successMessage.querySelector('span').textContent = 'Failed to send message. Please try again.';
+            successMessage.style.background = 'rgba(239, 68, 68, 0.9)';
+            successMessage.classList.add('show');
+
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+                successMessage.style.background = '';
+            }, 5000);
+
+            console.error('Form submission error:', error);
+        } finally {
+            // Reset button state
+            submitButton.innerHTML = originalText;
+            submitButton.disabled = false;
+        }
+    });
+}
+
+// ==========================================
+// RESUME DOWNLOAD MESSAGE
+// ==========================================
+const downloadResumeBtn = document.getElementById('downloadResumeBtn');
+const resumeMessage = document.getElementById('resumeMessage');
+
+if (downloadResumeBtn) {
+    downloadResumeBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // Show resume update message
+        resumeMessage.classList.add('show');
+
         // Hide after 3 seconds
         setTimeout(() => {
-            successMessage.classList.remove('show');
+            resumeMessage.classList.remove('show');
         }, 3000);
-        
-        // Reset form
-        contactForm.reset();
-        
-        // Log data (in production, send to server)
-        console.log('Form submitted:', data);
-        
-        // You can integrate EmailJS or your backend here
-        // Example: sendEmail(data);
     });
 }
 
@@ -218,12 +268,12 @@ const glowElements = document.querySelectorAll('.glow');
 document.addEventListener('mousemove', (e) => {
     const mouseX = e.clientX / window.innerWidth;
     const mouseY = e.clientY / window.innerHeight;
-    
+
     glowElements.forEach((glow, index) => {
         const speed = (index + 1) * 0.02;
         const moveX = (mouseX - 0.5) * 100 * speed;
         const moveY = (mouseY - 0.5) * 100 * speed;
-        
+
         glow.style.transform = `translate(${moveX}px, ${moveY}px)`;
     });
 });
