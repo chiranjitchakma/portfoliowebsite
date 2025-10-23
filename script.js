@@ -166,6 +166,29 @@ fadeElements.forEach(el => {
 const contactForm = document.getElementById('contactForm');
 const successMessage = document.getElementById('successMessage');
 
+// ==========================================
+// CONTACT FORM MESSAGE CHARACTER LIMIT (300 MAX)
+// ==========================================
+const messageInput = document.querySelector('#message'); // textarea ID in HTML
+const charLimit = 300;
+
+if (messageInput) {
+    messageInput.addEventListener('input', () => {
+        if (messageInput.value.length > charLimit) {
+            messageInput.value = messageInput.value.slice(0, charLimit);
+        }
+    });
+}
+
+// Optional live counter (only works if you add <small id="charCount">300 characters left</small> in HTML)
+const counterDisplay = document.querySelector('#charCount');
+if (messageInput && counterDisplay) {
+    messageInput.addEventListener('input', () => {
+        const remaining = charLimit - messageInput.value.length;
+        counterDisplay.textContent = `${remaining} characters left`;
+    });
+}
+
 if (contactForm) {
     contactForm.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -198,6 +221,9 @@ if (contactForm) {
 
                 // Reset form
                 this.reset();
+
+                // Reset counter if it exists
+                if (counterDisplay) counterDisplay.textContent = `${charLimit} characters left`;
 
                 // Hide message after 5 seconds
                 setTimeout(() => {
