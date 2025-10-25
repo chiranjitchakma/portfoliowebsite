@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chiranjit Chakma - Data Science & AI Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* =======================================
            RESET & BASE STYLES
@@ -93,6 +94,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
         }
 
         .logo {
@@ -246,9 +250,9 @@
             inset: 0;
             background: linear-gradient(
                 135deg,
-                rgba(10, 10, 10, 0.95) 0%,
-                rgba(10, 10, 10, 0.85) 50%,
-                rgba(10, 10, 10, 0.95) 100%
+                rgba(10, 10, 10, 0.7) 0%,
+                rgba(10, 10, 10, 0.5) 50%,
+                rgba(10, 10, 10, 0.7) 100%
             );
             z-index: 1;
         }
@@ -1238,7 +1242,6 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 <!-- Navigation -->
@@ -1746,7 +1749,10 @@
         
         skillBars.forEach(bar => {
             const percentage = bar.getAttribute('data-skill');
-            bar.style.width = percentage + '%';
+            // Set the width directly to trigger animation
+            setTimeout(() => {
+                bar.style.width = percentage + '%';
+            }, 100);
         });
     }
 
