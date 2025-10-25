@@ -242,7 +242,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            object-position: center;
+            object-position: center 25%; /* Moved image up to show your head higher */
         }
 
         .hero-overlay-dark {
@@ -250,9 +250,9 @@
             inset: 0;
             background: linear-gradient(
                 135deg,
-                rgba(10, 10, 10, 0.7) 0%,
-                rgba(10, 10, 10, 0.5) 50%,
-                rgba(10, 10, 10, 0.7) 100%
+                rgba(10, 10, 10, 0.6) 0%,
+                rgba(10, 10, 10, 0.4) 50%,
+                rgba(10, 10, 10, 0.6) 100%
             );
             z-index: 1;
         }
@@ -1149,11 +1149,11 @@
             html {
                 font-size: 15px;
             }
-            
+
             .nav-links {
                 display: none;
             }
-            
+
             .mobile-menu-btn {
                 display: block;
             }
@@ -1163,60 +1163,60 @@
             html {
                 font-size: 14px;
             }
-            
+
             section {
                 padding: 4rem 0;
             }
-            
+
             .container {
                 padding: 0 1.5rem;
             }
-            
+
             .hero {
                 min-height: 100svh;
             }
-            
+
             .hero-name {
                 font-size: 3rem;
             }
-            
+
             .hero-stats {
                 flex-direction: column;
                 gap: 1rem;
             }
-            
+
             .stat-box {
                 width: 100%;
             }
-            
+
             .hero-cta {
                 flex-direction: column;
                 width: 100%;
             }
-            
+
             .btn {
                 width: 100%;
                 justify-content: center;
             }
-            
+
             .nav-social {
                 display: none;
             }
-            
+
             .about-content,
             .skills-grid,
             .projects-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .contact-content {
                 grid-template-columns: 1fr;
             }
-            
+
             .contact-form,
             .contact-info {
                 padding: 2rem;
@@ -1228,15 +1228,15 @@
                 width: 250px !important;
                 height: 250px !important;
             }
-            
+
             .hero-tagline {
                 font-size: 1rem;
             }
-            
+
             .stat-number {
                 font-size: 2.5rem;
             }
-            
+
             .project-number {
                 font-size: 3rem;
             }
@@ -1318,7 +1318,7 @@
                         <div class="stat-label">Technologies</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-number">2024</div>
+                        <div class="stat-number">2027</div>
                         <div class="stat-label">Graduate</div>
                     </div>
                 </div>
@@ -1722,7 +1722,7 @@
 <footer class="footer">
     <div class="container">
         <div class="footer-content">
-            <p>&copy; 2024 Chiranjit Chakma. All rights reserved.</p>
+            <p>&copy; 2025 Chiranjit Chakma. All rights reserved.</p>
             <p>Built with <i class="fas fa-heart"></i> using HTML, CSS & JavaScript</p>
         </div>
     </div>
@@ -1746,10 +1746,16 @@
     // ==========================================
     function animateSkillBars() {
         const skillBars = document.querySelectorAll('.skill-bar');
-        
+
         skillBars.forEach(bar => {
             const percentage = bar.getAttribute('data-skill');
-            // Set the width directly to trigger animation
+            // Reset width to 0 first to ensure animation
+            bar.style.width = '0%';
+
+            // Force reflow to restart animation
+            void bar.offsetWidth;
+
+            // Set the width to trigger animation
             setTimeout(() => {
                 bar.style.width = percentage + '%';
             }, 100);
@@ -1762,7 +1768,7 @@
     document.getElementById('downloadResumeBtn').addEventListener('click', function() {
         const resumeMessage = document.getElementById('resumeMessage');
         resumeMessage.classList.add('show');
-        
+
         // Hide message after 3 seconds
         setTimeout(() => {
             resumeMessage.classList.remove('show');
@@ -1774,16 +1780,16 @@
     // ==========================================
     document.getElementById('contactForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
         // Show success message
         const successMessage = document.getElementById('successMessage');
         successMessage.classList.add('show');
-        
+
         // Hide message after 3 seconds
         setTimeout(() => {
             successMessage.classList.remove('show');
         }, 3000);
-        
+
         // Reset form
         this.reset();
     });
@@ -1827,7 +1833,7 @@
 
     function type() {
         const currentPhrase = phrases[phraseIndex];
-        
+
         if (isDeleting) {
             typingText.textContent = currentPhrase.substring(0, charIndex - 1);
             charIndex--;
@@ -1835,7 +1841,7 @@
             typingText.textContent = currentPhrase.substring(0, charIndex + 1);
             charIndex++;
         }
-        
+
         if (!isDeleting && charIndex === currentPhrase.length) {
             isEnd = true;
             isDeleting = true;
@@ -1868,7 +1874,7 @@
     window.addEventListener('load', () => {
         // Start typing animation
         setTimeout(type, 1000);
-        
+
         // Animate skill bars when skills section is in view
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -1877,10 +1883,11 @@
                     observer.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.5 });
-        
+        }, { threshold: 0.3 });
+
         observer.observe(document.querySelector('.skills'));
     });
 </script>
 </body>
 </html>
+
